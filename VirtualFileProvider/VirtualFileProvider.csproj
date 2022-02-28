@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Title>Virtual File Provider</Title>
+        <Authors>Brics</Authors>
+        <Description>Implements a virtual IFileProvider solution using Microsoft.Extensions.FileProviders</Description>
+        <Copyright>2022</Copyright>
+        <RepositoryUrl>https://github.com/irii/VirtualFileProvider</RepositoryUrl>
+        <PackageVersion>0.0.1</PackageVersion>
+        <PackageProjectUrl>https://github.com/irii/VirtualFileProvider</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/irii/VirtualFileProvider/blob/main/LICENSE</PackageLicenseUrl>
+        <RepositoryType>git</RepositoryType>
+        <LangVersion>10</LangVersion>
+        <RootNamespace>Brics.FileProviders</RootNamespace>
+        <PackageId>Brics.VirtualFileProvider</PackageId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+      <PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="6.0.0" />
+      <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0" />
+    </ItemGroup>
+
+</Project>
