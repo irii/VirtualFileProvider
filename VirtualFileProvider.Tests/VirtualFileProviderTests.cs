@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.FileProviders;
 using Xunit;
 
 namespace Brics.FileProviders.Tests;
@@ -71,7 +73,7 @@ public class VirtualFileProviderTests {
             { "/sub/nested/filesubsub2.txt", new TestVirtualFile("D3") }
         };
 
-        var files = provider.GetDirectoryContents("/sub/");
+        var files = provider.GetDirectoryContents("/sub");
         Assert.True(files.Exists);
 
         var filesList = files.ToList();
@@ -95,6 +97,70 @@ public class VirtualFileProviderTests {
         Assert.True(file.Exists);
         Assert.Equal("filesub2.txt", file.Name);
     }
+
+    [Fact]
+    public void Should_Get_All_Files() {
+        var provider = new VirtualFileProvider<TestVirtualFile> {
+            { "/filetop1.txt", new TestVirtualFile("D1") },
+            { "/sub/filesub1.txt", new TestVirtualFile("D2") },
+            { "/sub/filesub2.txt", new TestVirtualFile("D2") },
+            { "/sub/nested/filesubsub2.txt", new TestVirtualFile("D3") }
+        };
+
+        var files = GetAllFiles(provider, "/");
+        
+        Assert.Equal(4, files.Count);
+    }
+    
+    /// <summary>
+    /// Returns all files from the file provider, beginning with <paramref name="start"/>
+    /// </summary>
+    /// <param name="provider"></param>
+    /// <param name="start"></param>
+    /// <returns></returns>
+    internal static IReadOnlyList<string> GetAllFiles(IFileProvider provider, string start)
+    {
+        var files = new List<string>();
+        var dirs = new Queue<string>();
+
+        var infos = provider.GetDirectoryContents(start);
+
+        foreach (var info in infos)
+        {
+            if (info.IsDirectory)
+            {
+                dirs.Enqueue(info.Name);
+            }
+            else if (info.Exists)
+            {
+                files.Add(info.Name);
+            }
+        }
+
+        while (dirs.Count > 0)
+        {
+            var path = dirs.Dequeue();
+
+            infos = provider.GetDirectoryContents(path);
+
+            foreach (var info in infos)
+            {
+                if (info.IsDirectory)
+                {
+                    dirs.Enqueue(Path.Combine(path, info.Name));
+                }
+                else if (info.Exists)
+                {
+                    files.Add(Path.Combine(path, info.Name));
+                }
+            }
+
+        }
+
+
+        return files;
+    }
+
     
     private class TestVirtualFile : IVirtualFile {
         private readonly byte[] _content;

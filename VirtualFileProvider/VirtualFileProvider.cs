@@ -107,10 +107,18 @@ public class VirtualFileProvider<TVirtualFile> : IFileProvider, IEnumerable<KeyV
     }
 
     public IDirectoryContents GetDirectoryContents(string subpath) {
+        subpath = subpath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        
         if (string.IsNullOrWhiteSpace(subpath)) {
             subpath = Path.DirectorySeparatorChar.ToString();
-        } else if (subpath[subpath.Length - 1] != Path.DirectorySeparatorChar && subpath[subpath.Length - 1] != Path.AltDirectorySeparatorChar) {
-            subpath += Path.DirectorySeparatorChar;
+        }
+
+        if (subpath[0] != Path.DirectorySeparatorChar && subpath[0] != Path.AltDirectorySeparatorChar) {
+            subpath = Path.AltDirectorySeparatorChar + subpath;
+        }
+        
+        if (subpath[subpath.Length - 1] != Path.DirectorySeparatorChar && subpath[subpath.Length - 1] != Path.AltDirectorySeparatorChar) {
+            subpath += Path.AltDirectorySeparatorChar;
         }
 
         var subPathParts = subpath.Split(new[] {Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries);
@@ -147,6 +155,12 @@ public class VirtualFileProvider<TVirtualFile> : IFileProvider, IEnumerable<KeyV
     }
 
     public IFileInfo GetFileInfo(string subpath) {
+        subpath = subpath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        
+        if (subpath[0] != Path.DirectorySeparatorChar && subpath[0] != Path.AltDirectorySeparatorChar) {
+            subpath = Path.AltDirectorySeparatorChar + subpath;
+        }
+        
         if (_files.TryGetValue(subpath, out var fileInfo)) {
             return fileInfo;
         }
@@ -168,7 +182,7 @@ public class VirtualFileProvider<TVirtualFile> : IFileProvider, IEnumerable<KeyV
 
     private class VirtualFileInfoNotFound : IFileInfo {
         public VirtualFileInfoNotFound(string path) {
-            Name = Path.GetDirectoryName(path) ?? path;
+            Name = path;
             LastModified = DateTimeOffset.MinValue;
             IsDirectory = true;
         }

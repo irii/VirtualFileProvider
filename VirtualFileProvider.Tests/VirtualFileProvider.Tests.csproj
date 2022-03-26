@@ -7,6 +7,8 @@
         <IsPackable>false</IsPackable>
 
         <RootNamespace>Brics.FileProviders.Tests</RootNamespace>
+
+        <AssemblyName>Brics.FileProviders.Virtual.Tests</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
