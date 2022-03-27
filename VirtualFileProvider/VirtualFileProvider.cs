@@ -16,10 +16,13 @@ public class VirtualFileProvider<TVirtualFile> : IFileProvider, IEnumerable<KeyV
     private readonly bool _caseSensitive;
     private readonly IEqualityComparer<TVirtualFile> _virtualFileComparer;
 
+    private readonly StringComparer _sorter;
+
     public VirtualFileProvider(bool caseSensitive = true, IEqualityComparer<TVirtualFile>? virtualFileComparer = default) {
         _caseSensitive = caseSensitive;
         _virtualFileComparer = virtualFileComparer ?? EqualityComparer<TVirtualFile>.Default;
-        _files = new(caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
+        _sorter = caseSensitive ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+        _files = new(_sorter);
     }
 
     public IChangeToken Watch(string filter) {
@@ -126,7 +129,7 @@ public class VirtualFileProvider<TVirtualFile> : IFileProvider, IEnumerable<KeyV
         var files = new List<IFileInfo>();
         var dirs = new HashSet<string>(_caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
 
-        foreach (var entry in _files) {
+        foreach (var entry in _files.OrderBy(x => x.Key, _sorter)) {
             if (!entry.Key.StartsWith(subpath, _caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase)) {
                 continue;
             }
@@ -173,7 +176,7 @@ public class VirtualFileProvider<TVirtualFile> : IFileProvider, IEnumerable<KeyV
     }
     
     public IEnumerator<KeyValuePair<string, IVirtualFileInfo<TVirtualFile>>> GetEnumerator() {
-        return _files.GetEnumerator();
+        return _files.OrderBy(x => x.Key, _sorter).GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator() {

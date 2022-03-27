@@ -9,7 +9,7 @@
         <Description>Implements a virtual IFileProvider solution using Microsoft.Extensions.FileProviders</Description>
         <Copyright>2022</Copyright>
         <RepositoryUrl>https://github.com/irii/VirtualFileProvider</RepositoryUrl>
-        <PackageVersion>0.0.6</PackageVersion>
+        <PackageVersion>0.0.7</PackageVersion>
         <PackageProjectUrl>https://github.com/irii/VirtualFileProvider</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/irii/VirtualFileProvider/blob/main/LICENSE</PackageLicenseUrl>
         <RepositoryType>git</RepositoryType>
