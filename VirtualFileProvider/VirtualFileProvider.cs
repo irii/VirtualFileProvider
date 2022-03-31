@@ -94,7 +94,7 @@ public class VirtualFileProvider<TVirtualFile> : IFileProvider, IEnumerable<KeyV
         return removedFiles.Count > 0;
     }
 
-    protected void NotifyListeners(ICollection<string> paths) {
+    public void NotifyListeners(ICollection<string> paths) {
         var keys = _listeners.Keys.ToArray();
 
         foreach (var key in keys) {
